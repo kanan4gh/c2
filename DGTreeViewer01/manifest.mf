@@ -1,0 +1,6 @@
+Manifest-Version: 1.0
+OpenIDE-Module: org.myorg.dgc.treeviewer
+OpenIDE-Module-Layer: org/myorg/dgc/treeviewer/layer.xml
+OpenIDE-Module-Localizing-Bundle: org/myorg/dgc/treeviewer/Bundle.properties
+OpenIDE-Module-Specification-Version: 1.0
+

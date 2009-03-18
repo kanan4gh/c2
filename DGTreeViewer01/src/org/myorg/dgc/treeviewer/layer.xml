@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE filesystem PUBLIC "-//NetBeans//DTD Filesystem 1.2//EN" "http://www.netbeans.org/dtds/filesystem-1_2.dtd">
+<filesystem>
+    <folder name="Actions">
+        <folder name="Window">
+            <file name="org-myorg-dgc-treeviewer-DGTreeViewerAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.myorg.dgc.treeviewer.Bundle"/>
+                <attr name="component" methodvalue="org.myorg.dgc.treeviewer.DGTreeViewerTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.myorg.dgc.treeviewer.Bundle#CTL_DGTreeViewerAction"/>
+                <attr name="iconBase" stringvalue="org/myorg/dgc/treeviewer/1616.gif"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="DgcEquips"/>
+    <folder name="Menu">
+        <folder name="Window">
+            <file name="DGTreeViewerAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-myorg-dgc-treeviewer-DGTreeViewerAction.instance"/>
+            </file>
+        </folder>
+    </folder>
+    <folder name="Windows2">
+        <folder name="Components">
+            <file name="DGTreeViewerTopComponent.settings" url="DGTreeViewerTopComponentSettings.xml"/>
+        </folder>
+        <folder name="Modes">
+            <folder name="explorer">
+                <file name="DGTreeViewerTopComponent.wstcref" url="DGTreeViewerTopComponentWstcref.xml"/>
+            </folder>
+        </folder>
+    </folder>
+</filesystem>
