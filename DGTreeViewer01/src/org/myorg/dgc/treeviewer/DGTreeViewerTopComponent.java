@@ -34,7 +34,6 @@ final class DGTreeViewerTopComponent extends TopComponent implements ExplorerMan
         setName(NbBundle.getMessage(DGTreeViewerTopComponent.class, "CTL_DGTreeViewerTopComponent"));
         setToolTipText(NbBundle.getMessage(DGTreeViewerTopComponent.class, "HINT_DGTreeViewerTopComponent"));
         setIcon(Utilities.loadImage(ICON_PATH, true));
-        setDisplayName("DGCTreeViewer");
         try {
             mgr.setRootContext(DGCNode.createRootDGCNode());
         } catch (DataObjectNotFoundException ex) {

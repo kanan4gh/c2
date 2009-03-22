@@ -3,6 +3,12 @@
 <filesystem>
     <folder name="Actions">
         <folder name="Window">
+            <file name="org-myorg-dgc-treeviewer-CoordinationAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.myorg.dgc.treeviewer.Bundle"/>
+                <attr name="component" methodvalue="org.myorg.dgc.treeviewer.CoordinationTopComponent.findInstance"/>
+                <attr name="displayName" bundlevalue="org.myorg.dgc.treeviewer.Bundle#CTL_CoordinationAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
             <file name="org-myorg-dgc-treeviewer-DGTreeViewerAction.instance">
                 <attr name="SystemFileSystem.localizingBundle" stringvalue="org.myorg.dgc.treeviewer.Bundle"/>
                 <attr name="component" methodvalue="org.myorg.dgc.treeviewer.DGTreeViewerTopComponent.findInstance"/>
@@ -10,21 +16,43 @@
                 <attr name="iconBase" stringvalue="org/myorg/dgc/treeviewer/1616.gif"/>
                 <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
             </file>
+            <file name="org-myorg-dgc-treeviewer-DummyEditorAction.instance">
+                <attr name="SystemFileSystem.localizingBundle" stringvalue="org.myorg.dgc.treeviewer.Bundle"/>
+                <attr name="component" methodvalue="org.myorg.dgc.treeviewer.EditorTopComponent2.findInstance"/>
+                <attr name="displayName" bundlevalue="org.myorg.dgc.treeviewer.Bundle#CTL_DummyEditorAction"/>
+                <attr name="instanceCreate" methodvalue="org.openide.windows.TopComponent.openAction"/>
+            </file>
         </folder>
     </folder>
-    <folder name="DgcEquips"/>
+    <folder name="Coord">
+        <folder name="Acs"/>
+        <folder name="Camera"/>
+        <folder name="Recorder"/>
+    </folder>
     <folder name="Menu">
         <folder name="Window">
+            <file name="CoordinationAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-myorg-dgc-treeviewer-CoordinationAction.instance"/>
+            </file>
             <file name="DGTreeViewerAction.shadow">
                 <attr name="originalFile" stringvalue="Actions/Window/org-myorg-dgc-treeviewer-DGTreeViewerAction.instance"/>
+            </file>
+            <file name="DummyEditorAction.shadow">
+                <attr name="originalFile" stringvalue="Actions/Window/org-myorg-dgc-treeviewer-DummyEditorAction.instance"/>
             </file>
         </folder>
     </folder>
     <folder name="Windows2">
         <folder name="Components">
+            <file name="CoordinationTopComponent.settings" url="CoordinationTopComponentSettings.xml"/>
             <file name="DGTreeViewerTopComponent.settings" url="DGTreeViewerTopComponentSettings.xml"/>
+            <file name="DummyEditorTopComponent.settings" url="DummyEditorTopComponentSettings.xml"/>
         </folder>
         <folder name="Modes">
+            <folder name="editor">
+                <file name="CoordinationTopComponent.wstcref" url="CoordinationTopComponentWstcref.xml"/>
+                <file name="DummyEditorTopComponent.wstcref" url="DummyEditorTopComponentWstcref.xml"/>
+            </folder>
             <folder name="explorer">
                 <file name="DGTreeViewerTopComponent.wstcref" url="DGTreeViewerTopComponentWstcref.xml"/>
             </folder>

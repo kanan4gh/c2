@@ -11,7 +11,7 @@ import java.util.Date;
  *
  * @author akira
  */
-public class Camera extends Equipment {
+public class Recorder extends Equipment {
 
    private final Date date = new Date();
    private static int count = 0;
@@ -20,11 +20,11 @@ public class Camera extends Equipment {
    private String path;
 
 
-   public Camera() {
+   public Recorder() {
        this("camera");
    }
 
-   public Camera(String name) {
+   public Recorder(String name) {
        index = count++;
        this.name = name;
    }
@@ -55,7 +55,7 @@ public class Camera extends Equipment {
 
     @Override
    public String toString() {
-       return "Camera:" + index + " ("+name+") - " + date;
+       return "Recorder:" + index + " ("+name+") - " + date;
    }
 
 }

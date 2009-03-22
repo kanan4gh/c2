@@ -10,11 +10,13 @@ import java.io.IOException;
 import java.io.ObjectOutputStream;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import org.dg.util.DGLogger;
 import org.myorg.dgc.api.Camera;
 import org.openide.DialogDisplayer;
 import org.openide.NotifyDescriptor;
 import org.openide.actions.DeleteAction;
 import org.openide.actions.OpenAction;
+import org.openide.actions.RenameAction;
 import org.openide.cookies.InstanceCookie;
 import org.openide.cookies.OpenCookie;
 import org.openide.filesystems.FileLock;
@@ -28,17 +30,24 @@ import org.openide.nodes.BeanNode;
 import org.openide.nodes.FilterNode;
 import org.openide.nodes.Node;
 import org.openide.util.Exceptions;
+import org.openide.util.Lookup;
 import org.openide.util.NbBundle;
 import org.openide.util.actions.SystemAction;
 import org.openide.util.lookup.Lookups;
-import org.openide.windows.IOProvider;
-import org.openide.windows.OutputWriter;
 
 /**
  *
  * @author akira
  */
 public class DGCNode extends FilterNode {
+
+    public static final String RootFolderName = "Coord";
+    public static final String CameraFolderName = "Camera";
+    public static final String RecorderFolderName = "Recorder";
+    public static final String AcsFolderName = "Acs";
+    public static String RootCameraPath = RootFolderName + "/" + CameraFolderName;
+    public static String RootRecorderPath = RootFolderName + "/" + RecorderFolderName;
+    public static String RootAcsPath = RootFolderName + "/" + AcsFolderName;
 
     public DGCNode(Node folderNode) {
         this(folderNode, new DGCFolderChildren(folderNode));
@@ -50,17 +59,73 @@ public class DGCNode extends FilterNode {
 
     public static DGCNode createRootDGCNode() throws DataObjectNotFoundException {
         FileSystem sfs = Repository.getDefault().getDefaultFileSystem();
-        DataObject data = DataObject.find(sfs.getRoot().getFileObject("DgcEquips"));
+        DataObject data = DataObject.find(sfs.getRoot().getFileObject(RootFolderName));
         Node folderNode = data.getNodeDelegate();
-        return new DGCNode(folderNode);
+        return new RootDGCNode(folderNode);
+    }
+
+    public static class RootDGCNode extends DGCNode {
+
+        public RootDGCNode(Node folderNode) {
+            super(folderNode, new DGCRootFolderChildren(folderNode));
+        }
+
+        public RootDGCNode(Node folderNode, Children children) {
+            super(folderNode, children);
+        }
+
+        @Override
+        public Action[] getActions(boolean context) {
+            return new Action[]{};
+        }
+    }
+
+    private static class DGCRootFolderChildren extends FilterNode.Children {
+
+        DGCRootFolderChildren(Node dgcFolderNode) {
+            super(dgcFolderNode);
+        }
+
+        @Override
+        protected Node[] createNodes(Node n) {
+            DGLogger.getDefault().println("DGCRootFolderChildren.createNode:"+n.getName());
+            if (n.getLookup().lookup(DataFolder.class) != null) {
+                return new Node[]{new SubRootDGCNode(n)};
+            } else {
+                return new Node[0];
+            }
+        }
+    }
+
+    public static class SubRootDGCNode extends DGCNode {
+
+        public SubRootDGCNode(Node folderNode) {
+            super(folderNode, new DGCFolderChildren(folderNode));
+        }
+
+        public SubRootDGCNode(Node folderNode, Children children) {
+            super(folderNode, children);
+        }
+
+        @Override
+        public Action[] getActions(boolean context) {
+            Lookup lookup = getLookup();
+            DataFolder df = lookup.lookup(DataFolder.class);
+            return new Action[]{
+                        new AddFolderAction(df),
+                        new AddEquipAction(df)
+                    };
+        }
     }
 
     @Override
     public Action[] getActions(boolean context) {
-        DataFolder df = getLookup().lookup(DataFolder.class);
+        Lookup lookup = getLookup();
+        DataFolder df = lookup.lookup(DataFolder.class);
         return new Action[]{
                     new AddFolderAction(df),
                     new AddEquipAction(df),
+                    SystemAction.get(RenameAction.class),
                     SystemAction.get(DeleteAction.class)
                 };
     }
@@ -73,13 +138,16 @@ public class DGCNode extends FilterNode {
 
         @Override
         protected Node[] createNodes(Node n) {
+            DGLogger.getDefault().println("DGCFolderChildren.createNode:"+n.getName());
             if (n.getLookup().lookup(DataFolder.class) != null) {
                 return new Node[]{new DGCNode(n)};
             } else {
                 Camera camera = getCamera(n);
                 if (camera != null) {
                     try {
-                        return new Node[]{new EntryBeanNode(camera)};
+                        Node[] answer = new Node[]{new EntryBeanNode(camera)};
+                        DGLogger.getDefault().println("カメラ:" + camera.getName() + "を復元し、ノードを生成しました。");
+                        return answer;
                     } catch (IntrospectionException ex) {
                         assert false : ex;
                         return new Node[0];
@@ -106,7 +174,8 @@ public class DGCNode extends FilterNode {
 
         @Override
         public Action[] getActions(boolean context) {
-            Camera dobj = getLookup().lookup(Camera.class);
+            Lookup lookup = getLookup();
+            Camera dobj = lookup.lookup(Camera.class);
             return new Action[]{
                         SystemAction.get(OpenAction.class),
                         new DeleteEquipAction(dobj)
@@ -139,7 +208,7 @@ public class DGCNode extends FilterNode {
 
         public void open() {
 
-            EditorTopComponent etc = EditorTopComponent.getEditorComponent(camera.getName());
+            EditorTopComponent2 etc = EditorTopComponent2.getEditorComponent(camera.getName());
             etc.open();
             etc.requestActive();
             etc.setCamera(this.camera);
@@ -216,6 +285,8 @@ public class DGCNode extends FilterNode {
                         try {
                             camera.setPath(writeTo.getPath());
                             str.writeObject(camera);
+                            DGLogger.getDefault().println("カメラ:" + camera.getName() + "を生成しました。");
+                            EquipmentManager.getDefault().addCamera(camera);
                         } finally {
                             str.close();
                         }
@@ -250,6 +321,7 @@ public class DGCNode extends FilterNode {
                 try {
                     FileLock lock = fobj.lock();
                     fobj.delete(lock);
+                    EquipmentManager.getDefault().removeCamera(camera);
                 } catch (IOException ex) {
                     Exceptions.printStackTrace(ex);
                 }
